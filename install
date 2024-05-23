@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+banner=$(cat << END
+ **********************************************************                                                            
+           mm                                               
+           ##                                               
+ mm#####m  ##m####m   m####m    ##m####   ##m####  "##  ### 
+ ##mmmm "  ##"   ##  ##mmmm##   ##"       ##"       ##m ##  
+  """"##m  ##    ##  ##""""""   ##        ##         ####"  
+ #mmmmm##  ##    ##  "##mmmm#   ##        ##          ###   
+  """"""   ""    ""    """""    ""        ""          ##    
+                                                    ###     
+ ******* Automatic Shell Environment Setup Tool *********** 
+
+END
+)
+
+echo "$banner"
+echo
+
+echo " * Finding the location of the script..."
+
+# shellcheck disable=SC2128
+if [[ $BASH_SOURCE = */* ]]; then
+    datadir="${BASH_SOURCE%/*}/"
+else
+    datadir="./"
+fi
+
+echo -n ' * Detecting your shell... '
+
+getshell=$( grep "$USER" < /etc/passwd | cut -d":" -f7)
+
+if [[ "$getshell" =~ "bash" ]]; then
+    echo "bash."
+    shrc="$HOME/.bashrc"
+else
+    echo 'Unsupported shell, aborting.'
+    exit 1
+fi
+
+# shellcheck disable=SC2129
+echo >> "$shrc"
+echo "# begin sherry (the following lines have been automatically added by sherry)" >> "$shrc"
+echo >> "$shrc"
+
+
+# fzf
+if [ ! -d "$HOME/.fzf" ]; then
+    echo ' * Installing FZF...'
+    echo
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+else 
+    echo ' * FZF already installed.'
+fi
+
+# gitstatus
+if [ ! -d "$HOME/.gitstatus" ]; then
+    echo ' * Installing gitstatus...'
+    echo
+    git clone --depth 1 https://github.com/romkatv/gitstatus.git ~/.gitstatus
+    echo 'source ~/.gitstatus/gitstatus.prompt.sh' >> "$shrc"
+else 
+    echo ' * gitstatus already installed.'
+fi
+
+# configure case-insensitive autocompletion
+if [ ! -f "$HOME/.inputrc" ]; then
+    echo 'Configuring case-insensitive autocompletion...'
+    echo
+    # shellcheck disable=SC2016
+    echo '$include /etc/inputrc' > ~/.inputrc
+    echo 'set completion-ignore-case On' >> ~/.inputrc
+else 
+    echo ' * .inputrc already present.'
+fi
+
+echo ' * Adding shell files to .bashrc...'
+for file in "$datadir"shell/*.sh; do
+    echo " * * Sourcing $file"
+    echo "source $( realpath "$file" )" >> "$shrc"
+done
+echo
+
+echo " * Linking other configuration files into $HOME..."
+
+shopt -s dotglob
+for file in "$datadir"*; do
+    basefilename=$( basename "$file" )
+    realfilepath=$( realpath "$file" )
+    homelinkpath="$HOME/$basefilename"
+    if [ -f "$file" ] && [[ "$basefilename" = .* ]]; then
+        # this together with the -f option for ln takes care of broken symlinks
+        if [ -e "$homelinkpath" ]; then
+            echo " * * $homelinkpath already exists, skipping..."
+        else
+            echo " * * Linking $realfilepath to $homelinkpath..."
+            ln -sf "$realfilepath" "$homelinkpath"
+        fi
+    fi
+done
+
+if [ -d "{$datadir}scripts" ]; then
+    echo " * Symlinking user scripts to $HOME/bin"
+fi
+
+# shellcheck disable=SC2129
+echo >> "$shrc"
+echo "# end sherry" >> "$shrc"
+echo >> "$shrc"

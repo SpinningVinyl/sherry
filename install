@@ -90,7 +90,7 @@ for file in "$datadir"*; do
     basefilename=$( basename "$file" )
     realfilepath=$( realpath "$file" )
     homelinkpath="$HOME/$basefilename"
-    if [ -f "$file" ] && [[ "$basefilename" = .* ]]; then
+    if [ -f "$file" ] && [[ "$basefilename" = .* ]] && ! [[ "$basefilename" = ".gitmodules" ]]; then
         # this together with the -f option for ln takes care of broken symlinks
         if [ -e "$homelinkpath" ]; then
             echo " * * $homelinkpath already exists, skipping..."

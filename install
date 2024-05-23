@@ -114,6 +114,7 @@ done
 #             echo " * * $binlinkpath already exists, skipping..."
 #         elif [ -f "$file" ]; then
 #             echo " * * Linking $realfilepath to $binlinkpath..."
+#             ln -sf "$realfilepath" "$binlinkpath"
 #         fi
 #     done
 #     # shellcheck disable=SC2016

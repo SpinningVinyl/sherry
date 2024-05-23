@@ -101,9 +101,25 @@ for file in "$datadir"*; do
     fi
 done
 
-if [ -d "{$datadir}scripts" ]; then
+scriptdir="${datadir}scripts"
+homebindir="$HOME/bin"
+if [ -d "$scriptdir" ]; then
     echo " * Symlinking user scripts to $HOME/bin"
+    mkdir -p "$homebindir"
+    for file in "$scriptdir"*; do
+        basefilename=$( basename "$file" )
+        realfilepath=$( realpath "$file" )
+        binlinkpath="$homebindir/$basefilename"
+        if [ -e "$binlinkpath" ]; then
+            echo " * * $binlinkpath already exists, skipping..."
+        elif [ -f "$file" ]; then
+            echo " * * Linking $realfilepath to $binlinkpath..."
+        fi
+    done
+    # shellcheck disable=SC2016
+    echo 'export PATH=$HOME/bin:$PATH' >> "$shrc"
 fi
+
 
 # shellcheck disable=SC2129
 echo >> "$shrc"

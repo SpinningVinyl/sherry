@@ -78,7 +78,7 @@ fi
 
 echo ' * Adding shell files to .bashrc...'
 for file in "$datadir"shell/*.sh; do
-    echo " * * Sourcing $file"
+    echo "   * Sourcing $file"
     echo "source $( realpath "$file" )" >> "$shrc"
 done
 echo
@@ -93,9 +93,9 @@ for file in "$datadir"*; do
     if [ -f "$file" ] && [[ "$basefilename" = .* ]] && ! [[ "$basefilename" = ".gitmodules" ]]; then
         # this together with the -f option for ln takes care of broken symlinks
         if [ -e "$homelinkpath" ]; then
-            echo " * * $homelinkpath already exists, skipping..."
+            echo "   * $homelinkpath already exists, skipping..."
         else
-            echo " * * Linking $realfilepath to $homelinkpath..."
+            echo "   * Linking $realfilepath to $homelinkpath..."
             ln -sf "$realfilepath" "$homelinkpath"
         fi
     fi
@@ -111,9 +111,9 @@ done
 #         realfilepath=$( realpath "$file" )
 #         binlinkpath="$homebindir/$basefilename"
 #         if [ -e "$binlinkpath" ]; then
-#             echo " * * $binlinkpath already exists, skipping..."
+#             echo "   * $binlinkpath already exists, skipping..."
 #         elif [ -f "$file" ]; then
-#             echo " * * Linking $realfilepath to $binlinkpath..."
+#             echo "   * Linking $realfilepath to $binlinkpath..."
 #             ln -sf "$realfilepath" "$binlinkpath"
 #         fi
 #     done

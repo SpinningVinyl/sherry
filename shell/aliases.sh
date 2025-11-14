@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # ls aliases
 alias ll='ls -lF --group-directories-first'
 alias lla='ls -alF --group-directories-first'

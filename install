@@ -39,11 +39,19 @@ else
     exit 1
 fi
 
+# install necessary packages
+echo -n
+echo -n "Please enter your password to install packages via zypper: "
+read -rs passwd
+printf '\n * Installing useful command line utilities...\n'
+echo "$passwd" | sudo -S zypper --non-interactive install starship zoxide ripgrep findutils gnu_parallel neovim autoconf mc
+printf '\n * Installing developer tools...\n'
+echo "$passwd" | sudo -S zypper --non-interactive install -t pattern devel_basis
+
 # shellcheck disable=SC2129
 echo >> "$shrc"
 echo "# begin sherry (the following lines have been automatically added by sherry)" >> "$shrc"
 echo >> "$shrc"
-
 
 # fzf
 if [ ! -d "$HOME/.fzf" ]; then
@@ -53,16 +61,6 @@ if [ ! -d "$HOME/.fzf" ]; then
     ~/.fzf/install
 else 
     echo ' * FZF already installed.'
-fi
-
-# gitstatus
-if [ ! -d "$HOME/.gitstatus" ]; then
-    echo ' * Installing gitstatus...'
-    echo
-    git clone --depth 1 https://github.com/romkatv/gitstatus.git ~/.gitstatus
-    echo 'source ~/.gitstatus/gitstatus.prompt.sh' >> "$shrc"
-else 
-    echo ' * gitstatus already installed.'
 fi
 
 # configure case-insensitive autocompletion
@@ -121,6 +119,9 @@ done
 #     echo 'export PATH=$HOME/bin:$PATH' >> "$shrc"
 # fi
 
+# finish setting up zoxide
+# shellcheck disable=SC2016,SC2129
+echo 'eval "$(zoxide init bash)"' >> "$shrc"
 
 # shellcheck disable=SC2129
 echo >> "$shrc"

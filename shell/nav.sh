@@ -3,10 +3,10 @@
 # Use this function to go up the directory tree, e.g. `up 2` will go two subdirectories up
 up() {
     num=$1
-    if [ $num -eq 0 ]; then
+    if [[ "$num" == "" ]] || [ "$num" -eq 0 ]; then
         num=1
     fi
-    while [ $num -ne 0 ]; do
+    while [ "$num" -ne 0 ]; do
         cd ..
         num=$((num-1))
     done

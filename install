@@ -43,10 +43,12 @@ fi
 echo -n
 echo -n "Please enter your password to install packages via zypper: "
 read -rs passwd
-printf '\n * Installing useful command line utilities...\n'
-echo "$passwd" | sudo -S zypper --non-interactive install starship zoxide ripgrep findutils gnu_parallel neovim autoconf mc
 printf '\n * Installing developer tools...\n'
 echo "$passwd" | sudo -S zypper --non-interactive install -t pattern devel_basis
+printf '\n * Installing useful command line utilities...\n'
+echo "$passwd" | sudo -S zypper --non-interactive install starship zoxide ripgrep findutils gnu_parallel neovim autoconf \
+    mc jq btop gdu
+
 
 # shellcheck disable=SC2129
 echo >> "$shrc"

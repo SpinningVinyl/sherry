@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 banner=$(cat << END
  **********************************************************                                                            
            mm                                               
@@ -47,7 +49,27 @@ printf '\n * Installing developer tools...\n'
 echo "$passwd" | sudo -S zypper --non-interactive install -t pattern devel_basis
 printf '\n * Installing useful command line utilities...\n'
 echo "$passwd" | sudo -S zypper --non-interactive install starship zoxide ripgrep findutils gnu_parallel neovim autoconf \
-    mc jq btop gdu
+    mc jq btop gdu tmux bc curl wget
+
+echo -n
+echo -n "Installing Bitwarden dependencies..."
+echo "$passwd" | sudo -S zypper --non-interactive install libnotify-tools
+
+BWURL=$(curl -s https://api.github.com/repos/bitwarden/clients/releases | jq -r 'first(.[] | .assets[]? | select(.browser_download_url | endswith(".rpm")) | .browser_download_url)')
+
+if [ -n "$BWURL" ]; then
+    echo "Downloading Bitwarden from $BWURL"
+    curl -L -o "{$datadir}bitwarden-latest.rpm" "$BWURL" 
+else
+    echo "--- Could not find Bitwarden RPM URL"
+    exit 1
+fi
+
+if test -f "{$datadir}bitwarden-latest.rpm"; then
+    echo "$passwd" | sudo -S rpm -i bitwarden-latest.rpm
+fi
+
+rm "{$datadir}bitwarden-latest.rpm"
 
 
 # shellcheck disable=SC2129

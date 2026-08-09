@@ -20,6 +20,31 @@ END
 echo "$banner"
 echo
 
+if (( EUID == 0 )); then
+    echo 'This installer must not be run as root.' >&2
+    exit 1
+fi
+
+if [[ ! -r /etc/os-release ]]; then
+    echo 'Unable to determine the Linux distribution: /etc/os-release is unavailable.' >&2
+    exit 1
+fi
+
+# /etc/os-release is a system-provided file containing shell-compatible variables.
+# shellcheck disable=SC1091
+source /etc/os-release
+if [[ ${ID:-} != opensuse* && ${ID_LIKE:-} != *opensuse* && ${ID_LIKE:-} != *suse* ]]; then
+    echo "Unsupported distribution: ${PRETTY_NAME:-unknown}. This installer requires openSUSE." >&2
+    exit 1
+fi
+
+for command in zypper sudo git; do
+    if ! command -v "$command" > /dev/null 2>&1; then
+        echo "Required command not found: $command" >&2
+        exit 1
+    fi
+done
+
 echo " * Finding the location of the script..."
 
 # shellcheck disable=SC2128

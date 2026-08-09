@@ -160,7 +160,7 @@ fi
 echo ' * Adding shell files to .bashrc...'
 for file in "$datadir"shell/*.sh; do
     echo "   * Sourcing $file"
-    echo "source $( realpath "$file" )" >> "$shrc_tmp"
+    printf 'source %q\n' "$(realpath "$file")" >> "$shrc_tmp"
 done
 echo
 

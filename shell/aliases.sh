@@ -14,6 +14,9 @@ alias vi='nvim'
 # configure emacs for use on the command line
 alias e="emacsclient -tty -a ''"
 
+# always use emacsclient
+alias emacs="emacsclient -c"
+
 # update Debian
 # alias U='sudo apt update && sudo apt upgrade -y && flatpak update -y'
 

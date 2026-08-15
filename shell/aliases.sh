@@ -21,7 +21,7 @@ alias emacs="emacsclient -c"
 # alias U='sudo apt update && sudo apt upgrade -y && flatpak update -y'
 
 # update OpenSUSE
-alias U='sudo systemctl stop plymouth-start.service && sudo zypper refresh && sudo -n zypper dup && sudo flatpak update -y'
+alias U='sudo systemctl stop plymouth-start.service && sudo zypper refresh && sudo -n zypper dup && sudo flatpak update -y --no-static-deltas'
 
 # compare two directories
 alias diffdir='diff -rq'

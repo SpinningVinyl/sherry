@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# sudo with current user's path
+alias sudop='sudo env PATH=$PATH'
+
 # ls aliases
 alias ll='ls -lF --group-directories-first'
 alias lla='ls -alF --group-directories-first'

@@ -6,4 +6,7 @@ function set_win_title(){
 starship_precmd_user_func="set_win_title"
 
 export STARSHIP_CONFIG="$HOME/.starship.toml"
-eval "$(starship init bash)"
+
+if [[ "$TERM" != "dumb" ]]; then
+    eval "$(starship init bash)"
+fi
